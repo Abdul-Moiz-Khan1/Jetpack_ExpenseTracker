@@ -21,11 +21,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import moiz.dev.jetpackexpensetracker.ui.theme.zinc
 
 @Composable
@@ -51,7 +53,7 @@ fun HomeScreen() {
 
                 }) {
                 Column {
-                    Text(text = "Good Morning!!", fontSize = 16.sp, color = Color.White)
+                    Text(text = "Good Morning!!", fontSize = 16.sp, color = Color.White )
                     Text(
                         text = "Abdul Moiz ",
                         fontSize = 20.sp,
@@ -73,10 +75,17 @@ fun HomeScreen() {
                 end.linkTo(parent.end)
 
             })
+            TransactionList(modifier = Modifier
+                .fillMaxWidth()
+                .constrainAs(list) {
+                    top.linkTo(card.bottom)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                    height = Dimension.fillToConstraints
+                })
         }
-
     }
-
 }
 
 @Composable
@@ -158,6 +167,61 @@ fun CardRowItem(modifier: Modifier, title: String, image: Int, amount: Int) {
 }
 
 @Composable
-fun TransactionList(modifier: Modifier = Modifier) {
-    
+fun TransactionList(modifier: Modifier) {
+    Column(modifier = modifier.padding(horizontal = 16.dp)) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Recent Transaction",
+                modifier = Modifier.align(Alignment.CenterStart),
+                fontSize = 20.sp,
+            )
+            Text(
+                text = "See all",
+                modifier = Modifier.align(Alignment.CenterEnd),
+                fontSize = 16.sp,
+            )
+        }
+        TransactionItem(
+            title = "Netflix",
+            amount = 2000,
+            image = R.drawable.expense,
+            date = "Today",
+            color = zinc
+        )
+        TransactionItem(
+            title = "Upwork",
+            amount = 1291,
+            image = R.drawable.expense,
+            date = "Today",
+            color = zinc
+        )
+        TransactionItem(
+            title = "Youtube",
+            amount = 123,
+            image = R.drawable.expense,
+            date = "Today",
+            color = zinc
+        )
+    }
+}
+
+@Composable
+fun TransactionItem(title: String, amount: Int, image: Int, date: String , color:Color) {
+    Box(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+        Row() {
+            Image(
+                painter = painterResource(id = R.drawable.expense),
+                contentDescription = null,
+                modifier = Modifier.size(50.dp)
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Column {
+                Text(text = title, fontSize = 16.sp , fontWeight =  FontWeight.SemiBold)
+                Text(text = date, fontSize = 12.sp)
+
+            }
+        }
+        Text(text = "$${amount}", modifier = Modifier.align(Alignment.CenterEnd), fontSize = 20.sp , color = color)
+    }
+
 }

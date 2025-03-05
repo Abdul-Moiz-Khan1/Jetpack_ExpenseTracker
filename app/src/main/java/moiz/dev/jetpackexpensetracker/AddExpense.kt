@@ -1,7 +1,10 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package moiz.dev.jetpackexpensetracker
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,10 +18,22 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuBoxScope
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,6 +98,27 @@ fun AddExpense(modifier: Modifier = Modifier) {
 
 @Composable
 fun DataForm(modifier: Modifier = Modifier) {
+
+    val name = remember {
+        mutableStateOf("")
+    }
+    val amount = remember {
+        mutableStateOf("")
+    }
+    val date = remember {
+        mutableStateOf(0L)
+    }
+    val dateDialogVisibility = remember {
+        mutableStateOf(false)
+    }
+    val category = remember {
+        mutableStateOf("")
+    }
+    val type = remember {
+        mutableStateOf("")
+    }
+
+
     Column(
         modifier = modifier
             .padding(16.dp)
@@ -93,39 +129,85 @@ fun DataForm(modifier: Modifier = Modifier) {
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Text(text = "Type", fontSize = 14.sp,color = Color.Gray)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.size(8.dp))
 
-        Text(text = "Name", fontSize = 14.sp,color = Color.Gray)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
+        //name
+        Text(text = "Name", fontSize = 14.sp, color = Color.Black)
         Spacer(modifier = Modifier.size(8.dp))
+        OutlinedTextField(
+            value = name.value,
+            onValueChange = { name.value = it },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        Text(text = "Category", fontSize = 14.sp,color = Color.Gray)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
+        //amount
+        Text(text = "Amount", fontSize = 14.sp, color = Color.Black)
         Spacer(modifier = Modifier.size(8.dp))
+        OutlinedTextField(
+            value = amount.value,
+            onValueChange = { amount.value = it },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        Text(text = "Amount", fontSize = 14.sp,color = Color.Gray)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
+        //date
+        Text(text = "Date", fontSize = 14.sp, color = Color.Black)
         Spacer(modifier = Modifier.size(8.dp))
+        OutlinedTextField(
+            value = if (date.value == 0L) {
+                ""
+            } else {
+                Util.formatDtaetoHumanReadableFormat(date.value)
+            },
+            onValueChange = { },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { dateDialogVisibility.value = true },
+            enabled = false
+        )
 
-        Text(text = "Date", fontSize = 14.sp,color = Color.Gray)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
+        //dropdown category
+        Text(text = "Category", fontSize = 14.sp, color = Color.Black)
         Spacer(modifier = Modifier.size(8.dp))
+        ExpenseDropdown(
+            list = listOf(
+                "Netflix",
+                "Paypal",
+                "Grocery",
+                "Salary",
+                "Salary",
+                "Upwork",
+                "Donations"
+            ), onItemSelect = {
+                category.value = it
+            }
+        )
+
+        //type
+        Text(text = "Type", fontSize = 14.sp, color = Color.Black)
+        Spacer(modifier = Modifier.size(8.dp))
+        ExpenseDropdown(
+            list = listOf(
+                "Income",
+                "Expense",
+
+                ), onItemSelect = {
+                type.value = it
+            }
+        )
 
         Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Add Expense" )
-            
+            Text(text = "Add Expense")
+
         }
 
     }
-
-
+    if (dateDialogVisibility.value) {
+        ExpenseDatePicker(
+            onDateSelected = {
+                date.value = it
+                dateDialogVisibility.value = false
+            },
+            onDismiss = { dateDialogVisibility.value = false })
+    }
 }
 
 
@@ -133,4 +215,64 @@ fun DataForm(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 fun PreviewAddExpense() {
     AddExpense()
+}
+
+@Composable
+fun ExpenseDatePicker(
+    onDateSelected: (date: Long) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+    val selectedDate = datePickerState.selectedDateMillis ?: 0L
+    DatePickerDialog(
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            TextButton(onClick = { onDateSelected(selectedDate) }) {
+                Text(text = "Confirm")
+            }
+        }, dismissButton = {
+            TextButton(onClick = { onDateSelected(selectedDate) }) {
+                Text(text = "Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
+
+    }
+}
+
+@Composable
+fun ExpenseDropdown(list: List<String>, onItemSelect: (item: String) -> Unit) {
+    val expanded = remember {
+        mutableStateOf(false)
+    }
+    val selectedItem = remember {
+        mutableStateOf(list[0])
+    }
+    ExposedDropdownMenuBox(expanded = expanded.value, onExpandedChange = { expanded.value = it }) {
+        TextField(
+            value = selectedItem.value,
+            onValueChange = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(),
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded.value)
+
+            }
+        )
+        ExposedDropdownMenu(expanded = expanded.value, onDismissRequest = { }) {
+            list.forEach { item ->
+                DropdownMenuItem(text = { Text(text = item) }, onClick = {
+                    selectedItem.value = item
+                    onItemSelect(item)
+                    expanded.value = false
+                }
+                )
+
+            }
+
+        }
+    }
 }

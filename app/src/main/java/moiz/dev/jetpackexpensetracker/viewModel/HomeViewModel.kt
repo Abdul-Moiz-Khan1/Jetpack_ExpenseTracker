@@ -3,6 +3,7 @@ package moiz.dev.jetpackexpensetracker.viewModel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import moiz.dev.jetpackexpensetracker.Util
 import moiz.dev.jetpackexpensetracker.data.ExpenseDatabase
 import moiz.dev.jetpackexpensetracker.data.dao.ExpenseDao
 import moiz.dev.jetpackexpensetracker.data.model.ExpenseEntity
@@ -19,7 +20,7 @@ class HomeViewModel(dao: ExpenseDao) : ViewModel() {
                 total -= it.amount
             }
         }
-        return "$total"
+        return Util.formatToTwoDecimal(total)
     }
 
     fun getIncome(expenseList: List<ExpenseEntity>): String {
@@ -29,7 +30,7 @@ class HomeViewModel(dao: ExpenseDao) : ViewModel() {
                 total += it.amount
             }
         }
-        return "$total"
+        return Util.formatToTwoDecimal(total)
     }
 
     fun getExpense(expenseList: List<ExpenseEntity>): String {
@@ -39,7 +40,7 @@ class HomeViewModel(dao: ExpenseDao) : ViewModel() {
                 total += it.amount
             }
         }
-        return "$total"
+        return Util.formatToTwoDecimal(total)
 
     }
 }

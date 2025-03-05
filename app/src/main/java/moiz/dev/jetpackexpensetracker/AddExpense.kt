@@ -26,6 +26,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuBoxScope
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,17 +44,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import moiz.dev.jetpackexpensetracker.data.model.ExpenseEntity
 import moiz.dev.jetpackexpensetracker.viewModel.AddExpenseViewModel
 import moiz.dev.jetpackexpensetracker.viewModel.AddExpenseViewmodelFactory
+import java.util.Locale
 
 @Composable
-fun AddExpense(modifier: Modifier = Modifier) {
+fun AddExpense(navController: NavController) {
 
     val viewModel =
         AddExpenseViewmodelFactory(LocalContext.current).create(AddExpenseViewModel::class.java)
@@ -105,12 +110,20 @@ fun AddExpense(modifier: Modifier = Modifier) {
 
                 }, onAddExpenseClicked = {
                     coroutineScope.launch {
-                        viewModel.addExpense(it)
+                        if(viewModel.addExpense(it)){
+                         navController.popBackStack()
+                        }
                     }
 
             })
         }
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun PreviewAddExpense(modifier: Modifier = Modifier) {
+    AddExpense(rememberNavController())
 }
 
 @Composable
@@ -129,10 +142,10 @@ fun DataForm(modifier: Modifier = Modifier, onAddExpenseClicked: (model: Expense
         mutableStateOf(false)
     }
     val category = remember {
-        mutableStateOf("")
+        mutableStateOf("Netflix")
     }
     val type = remember {
-        mutableStateOf("")
+        mutableStateOf("income")
     }
 
 
@@ -180,7 +193,11 @@ fun DataForm(modifier: Modifier = Modifier, onAddExpenseClicked: (model: Expense
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable { dateDialogVisibility.value = true },
-            enabled = false
+            enabled = false,
+            colors = OutlinedTextFieldDefaults.colors(
+                disabledBorderColor = Color.Black,
+                disabledTextColor = Color.Black,
+            )
         )
         Spacer(modifier = Modifier.size(8.dp))
 
@@ -209,7 +226,6 @@ fun DataForm(modifier: Modifier = Modifier, onAddExpenseClicked: (model: Expense
             list = listOf(
                 "Income",
                 "Expense",
-
                 ), onItemSelect = {
                 type.value = it
             }
@@ -225,7 +241,7 @@ fun DataForm(modifier: Modifier = Modifier, onAddExpenseClicked: (model: Expense
                 amount.value.toDoubleOrNull() ?: 0.0,
                 Util.formatDtaetoHumanReadableFormat(date.value),
                 category.value,
-                type.value
+                type.value.lowercase(Locale.getDefault())
             )
             onAddExpenseClicked(model)
         }, modifier = Modifier.fillMaxWidth()
@@ -233,6 +249,7 @@ fun DataForm(modifier: Modifier = Modifier, onAddExpenseClicked: (model: Expense
 
         {
             Text(text = "Add Expense")
+
 
         }
 
@@ -248,11 +265,6 @@ fun DataForm(modifier: Modifier = Modifier, onAddExpenseClicked: (model: Expense
 }
 
 
-@Composable
-@Preview(showBackground = true)
-fun PreviewAddExpense() {
-    AddExpense()
-}
 
 @Composable
 fun ExpenseDatePicker(

@@ -2,6 +2,7 @@ package moiz.dev.jetpackexpensetracker
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,20 +35,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import moiz.dev.jetpackexpensetracker.data.model.ExpenseEntity
 import moiz.dev.jetpackexpensetracker.ui.theme.zinc
 import moiz.dev.jetpackexpensetracker.viewModel.HomeViewModel
 import moiz.dev.jetpackexpensetracker.viewModel.HomeViewmodelFactory
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
 
 
     val viewModel = HomeViewmodelFactory(LocalContext.current).create(HomeViewModel::class.java)
 
     Surface(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (nameRow, list, card, topBar) = createRefs()
+            val (nameRow, list, card, topBar, add) = createRefs()
             Image(
                 painter = painterResource(id = R.drawable.topbar),
                 contentDescription = null,
@@ -92,15 +96,29 @@ fun HomeScreen() {
                 end.linkTo(parent.end)
 
             }, balance, income, expense)
-            TransactionList(modifier = Modifier
-                .fillMaxWidth()
-                .constrainAs(list) {
-                    top.linkTo(card.bottom)
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(parent.bottom)
-                    height = Dimension.fillToConstraints
-                },list = state.value)
+            TransactionList(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .constrainAs(list) {
+                        top.linkTo(card.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        bottom.linkTo(parent.bottom)
+                        height = Dimension.fillToConstraints
+                    }, list = state.value
+            )
+            Image(
+                painter = painterResource(id = android.R.drawable.ic_menu_add),
+                contentDescription = null,
+                modifier = Modifier
+                    .constrainAs(add) {
+                        bottom.linkTo(parent.bottom)
+                        end.linkTo(parent.end)
+                    }
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .clickable { navController.navigate("/addExpense") }
+            )
         }
     }
 }
@@ -108,7 +126,7 @@ fun HomeScreen() {
 @Composable
 @Preview(showBackground = true)
 fun PreviewHomeScreen(modifier: Modifier = Modifier) {
-    HomeScreen()
+    HomeScreen(rememberNavController())
 }
 
 @Composable
@@ -200,15 +218,15 @@ fun TransactionList(modifier: Modifier, list: List<ExpenseEntity>) {
                 )
             }
         }
-        items(list){item->
+        items(list.reversed()) { item ->
             TransactionItem(
                 title = item.title,
                 amount = item.amount.toString(),
                 image = R.drawable.expense,
                 date = item.date.toString(),
-                color = if(item.type == "income") zinc else Color.Red
+                color = if (item.type == "income") zinc else Color.Red
             )
-            
+
         }
 
     }
@@ -224,7 +242,7 @@ fun TransactionItem(title: String, amount: String, image: Int, date: String, col
     ) {
         Row() {
             Image(
-                painter = painterResource(id = R.drawable.expense,),
+                painter = painterResource(id = R.drawable.expense),
                 contentDescription = null,
                 modifier = Modifier.size(50.dp),
                 colorFilter = ColorFilter.tint(Color.Green)

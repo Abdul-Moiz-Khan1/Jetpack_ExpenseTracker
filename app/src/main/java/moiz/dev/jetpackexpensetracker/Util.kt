@@ -10,4 +10,8 @@ object Util {
 
     }
 
+    fun formatToTwoDecimal(d:Double):String{
+        return String.format("%.2f",d)
+
+    }
 }

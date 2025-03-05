@@ -24,7 +24,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                 .addCallback(object : Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
                         super.onCreate(db)
-                        InitDB(context)
+//                        InitDB(context)
                     }
 
                     fun InitDB(context: Context) {

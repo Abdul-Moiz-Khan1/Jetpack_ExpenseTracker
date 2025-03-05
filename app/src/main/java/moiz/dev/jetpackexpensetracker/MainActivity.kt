@@ -20,7 +20,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JetpackExpenseTrackerTheme {
-                AddExpense()
+                NavHostScreen()
+//                AddExpense()
 //                HomeScreen()
             }
         }

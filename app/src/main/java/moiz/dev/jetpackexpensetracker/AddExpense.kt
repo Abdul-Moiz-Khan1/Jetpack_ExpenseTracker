@@ -34,20 +34,32 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import kotlinx.coroutines.launch
+import moiz.dev.jetpackexpensetracker.data.model.ExpenseEntity
+import moiz.dev.jetpackexpensetracker.viewModel.AddExpenseViewModel
+import moiz.dev.jetpackexpensetracker.viewModel.AddExpenseViewmodelFactory
 
 @Composable
 fun AddExpense(modifier: Modifier = Modifier) {
+
+    val viewModel =
+        AddExpenseViewmodelFactory(LocalContext.current).create(AddExpenseViewModel::class.java)
+
+    val coroutineScope = rememberCoroutineScope()
+
     Surface(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (nameRow, list, card, topBar) = createRefs()
@@ -85,19 +97,24 @@ fun AddExpense(modifier: Modifier = Modifier) {
                 )
             }
             DataForm(modifier = Modifier
-                .padding(top = 60.dp)
+                .padding(top = 20.dp)
                 .constrainAs(card) {
                     top.linkTo(nameRow.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(parent.end)
 
-                })
+                }, onAddExpenseClicked = {
+                    coroutineScope.launch {
+                        viewModel.addExpense(it)
+                    }
+
+            })
         }
     }
 }
 
 @Composable
-fun DataForm(modifier: Modifier = Modifier) {
+fun DataForm(modifier: Modifier = Modifier, onAddExpenseClicked: (model: ExpenseEntity) -> Unit) {
 
     val name = remember {
         mutableStateOf("")
@@ -132,25 +149,27 @@ fun DataForm(modifier: Modifier = Modifier) {
 
         //name
         Text(text = "Name", fontSize = 14.sp, color = Color.Black)
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(4.dp))
         OutlinedTextField(
             value = name.value,
             onValueChange = { name.value = it },
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.size(8.dp))
 
         //amount
         Text(text = "Amount", fontSize = 14.sp, color = Color.Black)
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(4.dp))
         OutlinedTextField(
             value = amount.value,
             onValueChange = { amount.value = it },
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.size(8.dp))
 
         //date
         Text(text = "Date", fontSize = 14.sp, color = Color.Black)
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(4.dp))
         OutlinedTextField(
             value = if (date.value == 0L) {
                 ""
@@ -163,10 +182,11 @@ fun DataForm(modifier: Modifier = Modifier) {
                 .clickable { dateDialogVisibility.value = true },
             enabled = false
         )
+        Spacer(modifier = Modifier.size(8.dp))
 
         //dropdown category
         Text(text = "Category", fontSize = 14.sp, color = Color.Black)
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(4.dp))
         ExpenseDropdown(
             list = listOf(
                 "Netflix",
@@ -180,10 +200,11 @@ fun DataForm(modifier: Modifier = Modifier) {
                 category.value = it
             }
         )
+        Spacer(modifier = Modifier.size(8.dp))
 
         //type
         Text(text = "Type", fontSize = 14.sp, color = Color.Black)
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(4.dp))
         ExpenseDropdown(
             list = listOf(
                 "Income",
@@ -193,8 +214,24 @@ fun DataForm(modifier: Modifier = Modifier) {
                 type.value = it
             }
         )
+        Spacer(modifier = Modifier.size(8.dp))
 
-        Button(onClick = { /*TODO*/ }, modifier = Modifier.fillMaxWidth()) {
+
+        //add button
+        Button(onClick = {
+            val model = ExpenseEntity(
+                null,
+                name.value,
+                amount.value.toDoubleOrNull() ?: 0.0,
+                Util.formatDtaetoHumanReadableFormat(date.value),
+                category.value,
+                type.value
+            )
+            onAddExpenseClicked(model)
+        }, modifier = Modifier.fillMaxWidth()
+        )
+
+        {
             Text(text = "Add Expense")
 
         }

@@ -35,7 +35,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     1,
                                     "Salary",
                                     10000.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Income",
                                     "income"
                                 )
@@ -45,7 +45,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     2,
                                     "Food",
                                     500.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Food",
                                     "expense"
                                 )
@@ -55,7 +55,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     3,
                                     "Rent",
                                     2000.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Rent",
                                     "expense"
                                 )
@@ -65,7 +65,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     4,
                                     "Salary",
                                     1000.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Income",
                                     "income"
                                 )
@@ -75,7 +75,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     5,
                                     "Food",
                                     500.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Food",
                                     "expense"
                                 )
@@ -85,7 +85,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     6,
                                     "Rent",
                                     2000.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Rent",
                                     "expense"
                                 )
@@ -95,7 +95,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     7,
                                     "Salary",
                                     1000.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Income",
                                     "income"
                                 )
@@ -105,7 +105,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     8,
                                     "Food",
                                     500.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Food",
                                     "expense"
                                 )
@@ -115,7 +115,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     9,
                                     "Rent",
                                     2000.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Rent",
                                     "expense"
                                 )
@@ -125,7 +125,7 @@ abstract class ExpenseDatabase : RoomDatabase() {
                                     10,
                                     "Salary",
                                     1000.0,
-                                    System.currentTimeMillis(),
+                                    System.currentTimeMillis().toString(),
                                     "Income",
                                     "income"
                                 )

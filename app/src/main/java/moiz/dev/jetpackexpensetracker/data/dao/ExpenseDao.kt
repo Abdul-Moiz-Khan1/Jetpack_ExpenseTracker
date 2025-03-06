@@ -7,12 +7,16 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 import moiz.dev.jetpackexpensetracker.data.model.ExpenseEntity
+import moiz.dev.jetpackexpensetracker.data.model.ExpenseSummary
 
 @Dao
 interface ExpenseDao {
 
     @Query("SELECT * FROM expense_table")
     fun getAllExpense(): Flow<List<ExpenseEntity>>
+
+    @Query("SELECT type,date,SUM(amount) as totalAmount FROM expense_table where    type =:type GROUP BY type,date ORDER BY date")
+    fun getAllExpensebyDate(type:String = "expense"): Flow<List<ExpenseSummary>>
 
     @Insert
     suspend fun insertExpense(expenseEntity: ExpenseEntity)

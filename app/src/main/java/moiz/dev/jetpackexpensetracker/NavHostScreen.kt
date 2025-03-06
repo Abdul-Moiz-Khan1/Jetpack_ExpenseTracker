@@ -1,11 +1,18 @@
 package moiz.dev.jetpackexpensetracker
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -21,18 +28,51 @@ import moiz.dev.jetpackexpensetracker.ui.theme.zinc
 
 @Composable
 fun NavHostScreen() {
+
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "/home") {
-        composable("/home") {
-            HomeScreen(navController)
+    var bottomBarVisibility by remember {
+        mutableStateOf(true)
+    }
+
+    Scaffold(bottomBar = {
+        AnimatedVisibility(visible = bottomBarVisibility) {
+            NavigationBottomBar(
+                navController = navController,
+                items = listOf(
+                    NavItem(
+                        route = "/home",
+                        icon = R.drawable.home
+                    ),
+                    NavItem(
+                        route = "/stats",
+                        icon = R.drawable.stats
+                    )
+                )
+            )
         }
-        composable("/addExpense") {
-            AddExpense(navController)
-        }
-        composable("/stats") {
-            StatsScreen(navController = navController)
+
+    }) {
+        NavHost(
+            navController = navController,
+            startDestination = "/home",
+            modifier = Modifier.padding(it)
+        ) {
+            composable("/home") {
+                bottomBarVisibility = true
+                HomeScreen(navController)
+            }
+            composable("/addExpense") {
+                bottomBarVisibility = false
+                AddExpense(navController)
+            }
+            composable("/stats") {
+                bottomBarVisibility = true
+                StatsScreen(navController = navController)
+            }
         }
     }
+
+
 }
 
 data class NavItem(
@@ -65,6 +105,8 @@ fun NavigationBottomBar(navController: NavController, items: List<NavItem>) {
                 NavigationBarItemDefaults.colors(
                     selectedIconColor = zinc,
                     selectedTextColor = zinc,
+                    unselectedIconColor = Color.Gray,
+                    unselectedTextColor = Color.Gray
                 )
 
             )

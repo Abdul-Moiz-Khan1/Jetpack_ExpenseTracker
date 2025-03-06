@@ -96,7 +96,9 @@ fun AddExpense(navController: NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.back),
                     contentDescription = null,
-                    modifier = Modifier.align(Alignment.CenterStart)
+                    modifier = Modifier.align(Alignment.CenterStart).clickable {
+                        navController.popBackStack()
+                    }
                 )
             }
             DataForm(modifier = Modifier

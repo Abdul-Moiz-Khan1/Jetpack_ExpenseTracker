@@ -79,5 +79,6 @@ dependencies {
     val nav_version = "2.8.8"
 
     implementation ("androidx.navigation:navigation-compose:$nav_version")
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 }

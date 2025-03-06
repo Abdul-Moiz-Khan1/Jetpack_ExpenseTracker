@@ -1,4 +1,4 @@
-package moiz.dev.jetpackexpensetracker
+package moiz.dev.jetpackexpensetracker.feature.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,8 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +35,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import moiz.dev.jetpackexpensetracker.R
 import moiz.dev.jetpackexpensetracker.data.model.ExpenseEntity
 import moiz.dev.jetpackexpensetracker.ui.theme.zinc
 import moiz.dev.jetpackexpensetracker.viewModel.HomeViewModel

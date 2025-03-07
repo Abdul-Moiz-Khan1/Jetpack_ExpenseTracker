@@ -15,16 +15,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import moiz.dev.jetpackexpensetracker.data.ExpenseDatabase
 import moiz.dev.jetpackexpensetracker.feature.add_expense.AddExpense
 import moiz.dev.jetpackexpensetracker.feature.home.HomeScreen
 import moiz.dev.jetpackexpensetracker.feature.stats.StatsScreen
 import moiz.dev.jetpackexpensetracker.ui.theme.zinc
+import moiz.dev.jetpackexpensetracker.viewModel.StatsScreenViewModel
+import moiz.dev.jetpackexpensetracker.viewModel.StatsViewmodelFactory
 
 @Composable
 fun NavHostScreen() {

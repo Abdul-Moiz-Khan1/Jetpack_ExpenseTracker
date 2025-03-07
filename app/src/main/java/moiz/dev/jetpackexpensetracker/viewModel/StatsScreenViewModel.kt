@@ -12,17 +12,16 @@ import moiz.dev.jetpackexpensetracker.data.model.ExpenseSummary
 import java.util.Map
 
 class StatsScreenViewModel(dao: ExpenseDao) : ViewModel() {
-    val enteries = dao.getAllExpensebyDate()
+    val enteries = dao.getAllExpenseByDate()
 
-    fun getEntriesForChart(enteries:List<ExpenseSummary>): List<Entry> {
+    fun getEntriesForChart(entries: List<ExpenseSummary>): List<Entry> {
         val list = mutableListOf<Entry>()
-        for (entry in enteries) {
-            val formatteDate = Util.getMillisFromDate(entry.date)
-            list.add(Entry(formatteDate.toFloat(), entry.totalAmount.toFloat()))
+        for (entry in entries) {
+            val formattedDate = Util.getMillisFromDate(entry.date)
+            list.add(Entry(formattedDate.toFloat(), entry.total_amount.toFloat()))
         }
-    return list
+        return list
     }
-
 
 }
 

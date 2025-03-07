@@ -1,5 +1,6 @@
 package moiz.dev.jetpackexpensetracker.feature.stats
 
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -57,9 +58,11 @@ fun StatsScreen(navController: NavController) {
                 Image(
                     painter = painterResource(id = R.drawable.back),
                     contentDescription = null,
-                    modifier = Modifier.align(Alignment.CenterStart).clickable {
-                        navController.popBackStack()
-                    },
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .clickable {
+                            navController.popBackStack()
+                        },
                     colorFilter = ColorFilter.tint(Color.Black)
                 )
 
@@ -67,38 +70,46 @@ fun StatsScreen(navController: NavController) {
             }
         }
     ) {
+        Log.d("listsize" ,"above view model")
         val viewModel =
-            StatsViewmodelFactory(LocalContext.current).create(StatsScreenViewModel::class.java)
+            StatsViewmodelFactory(navController.context).create(StatsScreenViewModel::class.java)
         val dataState = viewModel.enteries.collectAsState(initial = emptyList())
         Column(modifier = Modifier.padding(it)) {
+            Log.d("listsize" ,"in colom")
             val entries = viewModel.getEntriesForChart(dataState.value)
-            LineChart(entries)
+            Log.d("listsize" ,entries.size.toString())
+                LineChart(entries)
         }
     }
 }
 
 @Composable
 fun LineChart(entries: List<Entry>) {
- val context = LocalContext.current
+    val context = LocalContext.current
     AndroidView(factory = {
-        val view = LayoutInflater.from(context).inflate(R.layout.stats_line_chart , null)
+        val view = LayoutInflater.from(context).inflate(R.layout.stats_line_chart, null)
+        Log.d("listsize" ,"inflated")
         view
-    } , modifier =  Modifier.fillMaxWidth().height(250.dp)){view->
+
+    },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)) { view ->
         val lineChart = view.findViewById<LineChart>(R.id.linechart)
-         val dataset = LineDataSet(entries, "Expense").apply {
-             color = android.graphics.Color.parseColor("#FF2F7E79")
-             valueTextColor = android.graphics.Color.BLACK
-             lineWidth = 3f
-             axisDependency = YAxis.AxisDependency.RIGHT
-             setDrawFilled(true)
-             mode = LineDataSet.Mode.CUBIC_BEZIER
-             valueTextSize = 12f
-             valueTextColor = android.graphics.Color.parseColor("#FF2F7E79")
-             val drawable = ContextCompat.getDrawable(context, R.drawable.chart_gradient)
-             drawable?.let {
-                 fillDrawable = drawable
-             }
-         }
+        val dataset = LineDataSet(entries, "Expense").apply {
+            color = android.graphics.Color.parseColor("#FF2F7E79")
+            valueTextColor = android.graphics.Color.BLACK
+            lineWidth = 3f
+            axisDependency = YAxis.AxisDependency.RIGHT
+            setDrawFilled(true)
+            mode = LineDataSet.Mode.CUBIC_BEZIER
+            valueTextSize = 12f
+            valueTextColor = android.graphics.Color.parseColor("#FF2F7E79")
+            val drawable = ContextCompat.getDrawable(context, R.drawable.chart_gradient)
+            drawable?.let {
+                fillDrawable = drawable
+            }
+        }
         lineChart.xAxis.valueFormatter =
             object : com.github.mikephil.charting.formatter.ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
@@ -106,8 +117,8 @@ fun LineChart(entries: List<Entry>) {
                 }
             }
 
-
         lineChart.data = com.github.mikephil.charting.data.LineData(dataset)
+        Log.d("listsize" ,"refresh")
         lineChart.axisLeft.isEnabled = false
         lineChart.axisRight.isEnabled = false
         lineChart.axisRight.setDrawGridLines(false)
@@ -116,7 +127,6 @@ fun LineChart(entries: List<Entry>) {
         lineChart.xAxis.setDrawAxisLine(false)
         lineChart.xAxis.position = XAxis.XAxisPosition.BOTTOM
         lineChart.invalidate()
+
     }
 }
-
-

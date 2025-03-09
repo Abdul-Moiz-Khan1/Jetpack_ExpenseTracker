@@ -197,7 +197,6 @@ fun CardRowItem(modifier: Modifier, title: String, image: Int, amount: String) {
         }
         Text(text = "$${amount}", fontSize = 20.sp, color = Color.White)
     }
-
 }
 
 @Composable

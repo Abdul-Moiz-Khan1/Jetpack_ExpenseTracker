@@ -60,7 +60,6 @@ fun AddExpense(navController: NavController) {
 
     val viewModel =
         AddExpenseViewmodelFactory(LocalContext.current).create(AddExpenseViewModel::class.java)
-
     val coroutineScope = rememberCoroutineScope()
 
     Surface(modifier = Modifier.fillMaxSize()) {

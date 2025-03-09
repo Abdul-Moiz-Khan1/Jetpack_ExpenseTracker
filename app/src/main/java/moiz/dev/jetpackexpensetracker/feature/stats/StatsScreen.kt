@@ -116,7 +116,6 @@ fun LineChart(entries: List<Entry>) {
                     return Util.formatDateForChart(value.toLong())
                 }
             }
-
         lineChart.data = com.github.mikephil.charting.data.LineData(dataset)
         Log.d("listsize" ,"refresh")
         lineChart.axisLeft.isEnabled = false
